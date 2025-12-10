@@ -607,3 +607,111 @@ body.light-mode .sun-moon-icon::before {
   -webkit-text-fill-color: #ffffff !important;
   transition: background-color 5000s ease-in-out 0s;
 }
+/* ========================================= */
+/* MOBILE OPTIMIZATION (MEDIA QUERIES)       */
+/* ========================================= */
+
+@media (max-width: 900px) {
+  /* 1. NAVBAR - Adjust padding and hide text links */
+  nav { 
+    padding: 0 1.5rem; 
+    height: 80px;
+  }
+  
+  .nav-links { 
+    display: none; /* Hides the "01. Home" links on mobile */
+  } 
+  
+  .nav-buttons-group { 
+    border-left: none; 
+    padding-left: 0; 
+  }
+
+  /* 2. HERO - Stack text and image vertically */
+  .hero { 
+    flex-direction: column-reverse; 
+    text-align: center; 
+    justify-content: center; 
+    padding-top: 120px; 
+    gap: 3rem; 
+  }
+  
+  .hero-img { 
+    justify-content: center; 
+    width: 100%; 
+  }
+  
+  .profile-pic { 
+    width: 250px; 
+    height: 250px; 
+    margin-bottom: 20px; 
+  }
+  
+  .hero h1 { 
+    font-size: 3rem; 
+  }
+  
+  .hero h2 { 
+    font-size: 2rem; 
+  }
+  
+  /* 3. GRID - Single Column for Projects & Services */
+  .grid { 
+    grid-template-columns: 1fr; 
+  }
+  
+  /* 4. FOOTER - Stack Columns */
+  .footer-container { 
+    grid-template-columns: 1fr; 
+    text-align: center; 
+    gap: 2rem; 
+  }
+  
+  .footer-big-cta h2 { 
+    font-size: 3rem; 
+  }
+  
+  .social-icons { 
+    justify-content: center; 
+  }
+  
+  .footer-bottom { 
+    flex-direction: column; 
+    gap: 1rem; 
+  }
+
+  /* 5. CONTACT - Stack vertically */
+  .contact-container { 
+    grid-template-columns: 1fr; 
+  }
+  
+  /* 6. TIMELINE - Force everything to the left */
+  .timeline::after { 
+    left: 31px; 
+  } 
+  
+  .timeline-item { 
+    width: 100%; 
+    padding-left: 70px; 
+    padding-right: 25px; 
+  } 
+  
+  .timeline-item.left, .timeline-item.right { 
+    left: 0; 
+    text-align: left; 
+  } 
+  
+  .timeline-item.left .timeline-dot, .timeline-item.right .timeline-dot { 
+    left: 21px; 
+    right: auto;
+  } 
+  
+  .timeline-item.left .timeline-content::after, .timeline-item.right .timeline-content::after { 
+    left: -10px; 
+    right: auto; 
+  } 
+
+  /* 7. GENERAL ADJUSTMENTS */
+  h2 { font-size: 2rem; }
+  section { padding: 60px 5%; }
+}
