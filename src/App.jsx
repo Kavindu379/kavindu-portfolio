@@ -342,7 +342,7 @@ function App() {
           <div className="timeline-item left" data-aos="fade-right">
             <div className="timeline-dot"></div>
             <div className="timeline-content">
-              <span className="timeline-date">Jan 2023 - Present</span>
+              <span className="timeline-date">Jan 2023 </span>
               <h3>Software Engineering Intern</h3>
               <h4 style={{color:'var(--accent)', marginBottom:'10px'}}>IXDLAB</h4>
               <p>Specialized in UI/UX design, creating intuitive user interfaces and enhancing user experience for digital products. Worked on real-world client projects using Figma and React.</p>
@@ -351,7 +351,7 @@ function App() {
           <div className="timeline-item right" data-aos="fade-left">
             <div className="timeline-dot"></div>
             <div className="timeline-content">
-              <span className="timeline-date">2024 - Present</span>
+              <span className="timeline-date">2024 </span>
               <h3>BSc (Hons) Computer Engineering</h3>
               <h4 style={{color:'var(--accent)', marginBottom:'10px'}}>KDU (General Sir John Kotelawala Defence University)</h4>
               <p>Undergraduate degree focusing on hardware, software, and networking. Currently maintaining a <strong>GPA of 3.4</strong>.</p>
@@ -360,7 +360,7 @@ function App() {
           <div className="timeline-item left" data-aos="fade-right">
             <div className="timeline-dot"></div>
             <div className="timeline-content">
-              <span className="timeline-date">2023</span>
+              <span className="timeline-date">2025</span>
               <h3>Embedded Systems Project</h3>
               <h4 style={{color:'var(--accent)', marginBottom:'10px'}}>Self-Initiated</h4>
               <p>Designed and built a custom PCB for a home automation system using Altium Designer and programmed the logic in Embedded C.</p>
