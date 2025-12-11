@@ -149,7 +149,9 @@ function App() {
       tech: ['C++', 'Arduino', 'IR Sensors', 'Servo Motors', 'LCD Display'],
       icon: 'bi-p-square',
       image: 'https://images.unsplash.com/photo-1506521781263-d8422e82f27a?auto=format&fit=crop&q=80&w=1000',
-      github: 'https://github.com/Kavindu379'
+      github: 'https://github.com/Kavindu379',
+      // Added document link
+      document: 'assets/automated-parking-system.pdf'
     },
     {
       id: 2,
@@ -159,7 +161,9 @@ function App() {
       tech: ['React', 'Node.js', 'MongoDB', 'Tailwind CSS', 'Framer Motion'],
       icon: 'bi-building',
       image: 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&q=80&w=1000',
-      github: 'https://github.com/Kavindu379/Real_Estate_Website'
+      github: 'https://github.com/Kavindu379/Real_Estate_Website',
+      // Added document link
+      document: 'assets/real-estate-platform.pdf'
     },
     {
       id: 3,
@@ -567,6 +571,11 @@ function App() {
               </div>
               <div className="modal-links">
                 <MagneticButton href={selectedProject.github} target="_blank" className="btn btn-primary"><i className="bi bi-github"></i> View Code</MagneticButton>
+                {selectedProject.document && (
+                  <MagneticButton href={selectedProject.document} download target="_blank" className="btn btn-primary" style={{marginLeft: '1rem'}}>
+                    <i className="bi bi-file-earmark-arrow-down"></i> Download Doc
+                  </MagneticButton>
+                )}
               </div>
             </div>
           </div>
