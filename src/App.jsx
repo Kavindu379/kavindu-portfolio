@@ -44,10 +44,13 @@ function App() {
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [isLoading, setIsLoading] = useState(true);
-  const [selectedProject, setSelectedProject] = useState(null);
   
-  // --- NEW: STATE FOR SERVICE MODAL ---
+  // --- MODAL STATES ---
+  const [selectedProject, setSelectedProject] = useState(null);
   const [selectedService, setSelectedService] = useState(null);
+
+  // --- NEW: MOBILE MENU STATE ---
+  const [menuOpen, setMenuOpen] = useState(false);
 
   // --- DYNAMIC TITLE EFFECT ---
   useEffect(() => {
@@ -97,7 +100,6 @@ function App() {
     }
   ];
 
-  // --- NEW: SERVICE DATA WITH FULL DESCRIPTIONS ---
   const services = [
     { icon: 'palette', title: 'UI/UX Design', desc: 'Designing intuitive interfaces.', fullDesc: 'I create user-centric designs that are both visually appealing and easy to use. My process involves user research, wireframing, prototyping, and usability testing to ensure the final product meets the needs of the target audience.' },
     { icon: 'cpu', title: 'Embedded Systems', desc: 'IoT solutions & C++ programming.', fullDesc: 'I specialize in developing embedded systems for IoT applications. This includes programming microcontrollers like Arduino and ESP32 using C++, designing custom PCBs, and integrating various sensors and actuators.' },
@@ -130,8 +132,8 @@ function App() {
     AOS.init({ 
       duration: 800,        
       easing: 'ease-out-cubic', 
-      once: true,           
-      offset: 50,          
+      once: true,            
+      offset: 50,           
       anchorPlacement: 'top-bottom', 
       delay: 0,
     });
@@ -157,7 +159,8 @@ function App() {
       setMousePosition({ x: e.clientX, y: e.clientY });
       
       const target = e.target;
-      if (target.closest('a, button, .card, .logo, input, textarea, .footer-big-cta h2')) {
+      // Added .hamburger and .mobile-menu-overlay a to list of hoverable items
+      if (target.closest('a, button, .card, .logo, input, textarea, .footer-big-cta h2, .hamburger, .mobile-menu-overlay a')) {
         document.body.classList.add('hovering');
       } else {
         document.body.classList.remove('hovering');
@@ -182,6 +185,22 @@ function App() {
     }
   }, [isLoading]);
 
+  // --- NEW: MENU FUNCTIONS ---
+  const toggleMobileMenu = () => {
+    setMenuOpen(!menuOpen);
+    // Lock body scroll when menu is open
+    if (!menuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'auto';
+    }
+  };
+
+  const closeMobileMenu = () => {
+    setMenuOpen(false);
+    document.body.style.overflow = 'auto';
+  };
+
   const toggleTheme = () => {
     const newTheme = theme === 'light' ? 'dark' : 'light';
     setTheme(newTheme);
@@ -200,7 +219,6 @@ function App() {
     window.location.reload();
   };
 
-  // --- EMAIL SUBMIT FUNCTION ---
   const onSubmit = async (event) => {
     event.preventDefault();
     const formData = new FormData(event.target);
@@ -249,6 +267,8 @@ function App() {
       {/* --- NAVBAR --- */}
       <nav data-aos="fade-down" data-aos-duration="1000" data-aos-delay="200" style={{ zIndex: 10000 }}>
         <div className="logo" onClick={handleReset} style={{cursor: 'pointer', zIndex: 10001}} title="Reset Site">RHKKS</div>
+        
+        {/* DESKTOP NAV LINKS (Will be hidden on mobile by CSS) */}
         <ul className="nav-links">
           <li><a href="#home">01. Home</a></li>
           <li><a href="#about">02. About</a></li>
@@ -256,9 +276,10 @@ function App() {
           <li><a href="#portfolio">04. Projects</a></li>
           <li><a href="#contact">05. Contact</a></li>
         </ul>
-        <div style={{ display: 'flex', alignItems: 'center' }}>
+
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
           
-          {/* THEME TOGGLE (INSIDE NAV) */}
+          {/* THEME TOGGLE */}
           <button 
             className="creative-theme-toggle" 
             onClick={toggleTheme} 
@@ -267,13 +288,38 @@ function App() {
             <div className="sun-moon-icon"></div>
           </button>
 
-          {/* CREATIVE DOWNLOAD CV BUTTON */}
-          <MagneticButton href="cv.pdf" download className="creative-btn" style={{marginTop: 0, padding: '10px 24px', fontSize: '0.85rem'}}>
-            <i className="bi bi-download"></i> Resume
-          </MagneticButton>
+          {/* DESKTOP RESUME BUTTON (Will be hidden on mobile by CSS) */}
+          <div className="desktop-btn">
+             <MagneticButton href="cv.pdf" download className="creative-btn" style={{marginTop: 0, padding: '10px 24px', fontSize: '0.85rem'}}>
+               <i className="bi bi-download"></i> Resume
+             </MagneticButton>
+          </div>
+
+          {/* --- NEW: HAMBURGER BUTTON (Visible only on mobile) --- */}
+          <div className={`hamburger ${menuOpen ? 'active' : ''}`} onClick={toggleMobileMenu}>
+            <span className="bar"></span>
+            <span className="bar"></span>
+            <span className="bar"></span>
+          </div>
 
         </div>
       </nav>
+
+      {/* --- NEW: MOBILE MENU OVERLAY --- */}
+      <div className={`mobile-menu-overlay ${menuOpen ? 'active' : ''}`}>
+        <ul className="mobile-nav-links">
+          <li><a href="#home" onClick={closeMobileMenu}><span>01.</span> Home</a></li>
+          <li><a href="#about" onClick={closeMobileMenu}><span>02.</span> About</a></li>
+          <li><a href="#resume" onClick={closeMobileMenu}><span>03.</span> Resume</a></li>
+          <li><a href="#portfolio" onClick={closeMobileMenu}><span>04.</span> Projects</a></li>
+          <li><a href="#contact" onClick={closeMobileMenu}><span>05.</span> Contact</a></li>
+          <li style={{marginTop: '2rem'}}>
+             <MagneticButton href="cv.pdf" download className="creative-btn" onClick={closeMobileMenu}>
+                <i className="bi bi-download"></i> Download Resume
+             </MagneticButton>
+          </li>
+        </ul>
+      </div>
 
       <section id="home" className="hero">
         <div className="hero-text" data-aos="fade-up" data-aos-delay="300">
@@ -314,7 +360,7 @@ function App() {
             </div>
           </div>
           <div data-aos="fade-left">
-             <div className="skills-container">
+              <div className="skills-container">
               <h3>Technical Proficiency</h3>
               {['Java', 'Python', 'Figma', 'Embedded C'].map((skill, index) => (
                 <div className="skill-bar" key={index} style={{marginBottom:'1.5rem'}}>
@@ -369,18 +415,15 @@ function App() {
         </div>
       </section>
 
-      {/* --- UPDATED SERVICES SECTION WITH READ MORE --- */}
       <section id="services">
         <h2 data-aos="fade-up"><span style={{color:'var(--accent)', marginRight:'10px'}}>03.</span> What I Do</h2>
         <div className="grid">
           {services.map((service, index) => (
             <Tilt key={index} tiltMaxAngleX={5} tiltMaxAngleY={5} scale={1.02} transitionSpeed={2500}>
-              {/* Added onClick to open modal */}
               <div className="card" data-aos="fade-up" data-aos-delay={index * 50} onClick={() => setSelectedService(service)} style={{cursor: 'pointer'}}>
                 <div className="icon"><i className={`bi bi-${service.icon}`}></i></div>
                 <h3>{service.title}</h3>
                 <p>{service.desc}</p>
-                {/* Visual cue for click */}
                 <small style={{color:'var(--accent)', marginTop:'1rem', display:'block'}}>Read More &rarr;</small>
               </div>
             </Tilt>
@@ -427,7 +470,7 @@ function App() {
         </div>
       )}
 
-      {/* --- NEW: SERVICES MODAL --- */}
+      {/* --- SERVICES MODAL --- */}
       {selectedService && (
         <div className="modal-overlay" onClick={() => setSelectedService(null)} style={{zIndex: 20002}}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()} style={{ maxWidth: '600px' }}>
@@ -447,9 +490,9 @@ function App() {
         <h2 data-aos="fade-up"><span style={{color:'var(--accent)', marginRight:'10px'}}>05.</span> Get In Touch</h2>
         <div className="contact-container">
           <div data-aos="fade-right" data-aos-delay="100">
-             <div className="contact-info-item"><i className="bi bi-geo-alt"></i><div><h4 style={{margin:0, color:'var(--heading-color)'}}>Location</h4><p style={{margin:0}}>Panadura, Sri Lanka</p></div></div>
-             <div className="contact-info-item"><i className="bi bi-telephone"></i><div><h4 style={{margin:0, color:'var(--heading-color)'}}>Phone</h4><p style={{margin:0}}>074 058 8722</p></div></div>
-             <div className="contact-info-item"><i className="bi bi-envelope"></i><div><h4 style={{margin:0, color:'var(--heading-color)'}}>Email</h4><p style={{margin:0}}>kkavindu379@gmail.com</p></div></div>
+              <div className="contact-info-item"><i className="bi bi-geo-alt"></i><div><h4 style={{margin:0, color:'var(--heading-color)'}}>Location</h4><p style={{margin:0}}>Panadura, Sri Lanka</p></div></div>
+              <div className="contact-info-item"><i className="bi bi-telephone"></i><div><h4 style={{margin:0, color:'var(--heading-color)'}}>Phone</h4><p style={{margin:0}}>074 058 8722</p></div></div>
+              <div className="contact-info-item"><i className="bi bi-envelope"></i><div><h4 style={{margin:0, color:'var(--heading-color)'}}>Email</h4><p style={{margin:0}}>kkavindu379@gmail.com</p></div></div>
           </div>
           <div className="terminal-window" data-aos="fade-left">
             <div className="terminal-header"><div className="terminal-btn red"></div><div className="terminal-btn yellow"></div><div className="terminal-btn green"></div><div style={{marginLeft: '10px', color: '#888', fontSize: '0.8rem'}}>bash — 80x24</div></div>
