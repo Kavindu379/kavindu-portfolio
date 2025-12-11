@@ -396,7 +396,7 @@ function App() {
           </div>
           <h3>Hi, my name is</h3>
           <h1 className="glitch" data-text="Kavindu Kavishka.">Kavindu Kavishka.</h1>
-          <h2 style={{color:'var(--text-color)', fontSize:'3rem', marginTop:'0', border:'none'}}>I build things for the web & IoT.</h2>
+          <h4 style={{color:'var(--text-color)', fontSize:'3rem', marginTop:'0', border:'none'}}>I build things for the web & IoT.</h4>
           <div style={{ fontSize: '1.2rem', color: 'var(--accent)', fontFamily: 'monospace', marginBottom: '2rem', height: '30px' }}>
             <Typewriter options={{ strings: ['> Computer Engineer', '> Full Stack Developer', '> Embedded Systems'], autoStart: true, loop: true, delay: 40 }} />
           </div>
@@ -485,7 +485,7 @@ function App() {
 
       {/* --- REVISED STATS SECTION (Only 3 Cards) --- */}
       <section id="stats">
-        <h2 data-aos="fade-up"><span style={{color:'var(--accent)', marginRight:'10px'}}>03.</span> Live Stats</h2>
+        <h2 data-aos="fade-up"><span style={{color:'var(--accent)', marginRight:'10px'}}>03.</span> Live Stats Of Github</h2>
         
         {/* Horizontal Stats Grid - 3 Columns now */}
         <div className="stats-grid" data-aos="fade-up" style={{gridTemplateColumns: "repeat(3, 1fr)"}}>
