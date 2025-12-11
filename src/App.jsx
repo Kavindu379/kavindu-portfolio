@@ -296,17 +296,22 @@ function App() {
   const onSubmit = async (event) => {
     event.preventDefault();
     const formData = new FormData(event.target);
-    formData.append("access_key", "36782a8c-a13f-436b-ba82-06973d308895");
+    // Ensure we set the correct access key (use set to replace any placeholder hidden input)
+    formData.set("access_key", "36782a8c-a13f-436b-ba82-06973d308895");
+    // Add a subject for clearer email notifications
+    formData.set("subject", "New message from portfolio contact form");
     const response = await fetch("https://api.web3forms.com/submit", {
       method: "POST",
       body: formData
     });
     const data = await response.json();
+    console.log('Web3Forms response:', data);
     if (data.success) {
       alert("Message Sent Successfully!");
       event.target.reset();
     } else {
-      console.log("Error", data);
+      alert('Message failed to send — check console for details.');
+      console.error("Web3Forms error:", data);
     }
   };
 
