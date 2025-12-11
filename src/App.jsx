@@ -5,6 +5,48 @@ import Tilt from 'react-parallax-tilt'
 import Typewriter from 'typewriter-effect'
 import ParticlesBackground from './ParticlesBackground'
 
+// --- CUSTOM HOOK FOR NUMBER ANIMATION ---
+const useCounter = (end, duration = 2000) => {
+  const [count, setCount] = useState(0);
+  
+  useEffect(() => {
+    let start = 0;
+    const increment = end / (duration / 16); 
+    const timer = setInterval(() => {
+      start += increment;
+      if (start >= end) {
+        setCount(end);
+        clearInterval(timer);
+      } else {
+        setCount(Math.floor(start));
+      }
+    }, 16);
+    return () => clearInterval(timer);
+  }, [end, duration]);
+  return count;
+};
+
+// --- STAT CARD COMPONENT ---
+const StatCard = ({ icon, label, value, colorClass }) => {
+  const count = useCounter(value);
+  
+  return (
+    <Tilt tiltMaxAngleX={5} tiltMaxAngleY={5} scale={1.02} transitionSpeed={2500} className="tilt-card">
+      <div className={`stat-card ${colorClass}`}>
+          <div className="stat-content">
+              <div className="stat-icon-wrapper">
+                  <i className={`bi ${icon}`}></i>
+              </div>
+              <div className="stat-info">
+                  <h3>{count}</h3>
+                  <p>{label}</p>
+              </div>
+          </div>
+      </div>
+    </Tilt>
+  );
+};
+
 // --- MAGNETIC BUTTON COMPONENT ---
 const MagneticButton = ({ children, className, onClick, href, target, ...props }) => {
   const buttonRef = useRef(null);
@@ -44,9 +86,45 @@ function App() {
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [isLoading, setIsLoading] = useState(true);
+  
   const [selectedProject, setSelectedProject] = useState(null);
   const [selectedService, setSelectedService] = useState(null);
   const [menuOpen, setMenuOpen] = useState(false);
+
+  // --- GITHUB STATS STATE ---
+  const [githubStats, setGithubStats] = useState({ repos: 0, stars: 0, forks: 0 });
+
+  useEffect(() => {
+    const fetchGithubData = async () => {
+      try {
+        const userRes = await fetch('https://api.github.com/users/Kavindu379');
+        const userData = await userRes.json();
+
+        const reposRes = await fetch('https://api.github.com/users/Kavindu379/repos?per_page=100');
+        const reposData = await reposRes.json();
+
+        let totalStars = 0;
+        let totalForks = 0;
+
+        if (Array.isArray(reposData)) {
+          reposData.forEach(repo => {
+            totalStars += repo.stargazers_count;
+            totalForks += repo.forks_count;
+          });
+        }
+
+        setGithubStats({
+          repos: userData.public_repos || 0,
+          stars: totalStars,
+          forks: totalForks
+        });
+      } catch (error) {
+        console.error("Error fetching GitHub data:", error);
+      }
+    };
+
+    fetchGithubData();
+  }, []);
 
   useEffect(() => {
     const originalTitle = document.title;
@@ -154,7 +232,7 @@ function App() {
       setMousePosition({ x: e.clientX, y: e.clientY });
       
       const target = e.target;
-      if (target.closest('a, button, .card, .logo, input, textarea, .footer-big-cta h2, .hamburger, .mobile-menu-overlay a')) {
+      if (target.closest('a, button, .card, .logo, input, textarea, .footer-big-cta h2, .hamburger, .mobile-menu-overlay a, .stat-card')) {
         document.body.classList.add('hovering');
       } else {
         document.body.classList.remove('hovering');
@@ -261,9 +339,10 @@ function App() {
         <ul className="nav-links">
           <li><a href="#home">01. Home</a></li>
           <li><a href="#about">02. About</a></li>
-          <li><a href="#resume">03. Resume</a></li>
-          <li><a href="#portfolio">04. Projects</a></li>
-          <li><a href="#contact">05. Contact</a></li>
+          <li><a href="#stats">03. Stats</a></li>
+          <li><a href="#resume">04. Resume</a></li>
+          <li><a href="#portfolio">05. Projects</a></li>
+          <li><a href="#contact">06. Contact</a></li>
         </ul>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
@@ -295,9 +374,10 @@ function App() {
         <ul className="mobile-nav-links">
           <li><a href="#home" onClick={closeMobileMenu}><span>01.</span> Home</a></li>
           <li><a href="#about" onClick={closeMobileMenu}><span>02.</span> About</a></li>
-          <li><a href="#resume" onClick={closeMobileMenu}><span>03.</span> Resume</a></li>
-          <li><a href="#portfolio" onClick={closeMobileMenu}><span>04.</span> Projects</a></li>
-          <li><a href="#contact" onClick={closeMobileMenu}><span>05.</span> Contact</a></li>
+          <li><a href="#stats" onClick={closeMobileMenu}><span>03.</span> Stats</a></li>
+          <li><a href="#resume" onClick={closeMobileMenu}><span>04.</span> Resume</a></li>
+          <li><a href="#portfolio" onClick={closeMobileMenu}><span>05.</span> Projects</a></li>
+          <li><a href="#contact" onClick={closeMobileMenu}><span>06.</span> Contact</a></li>
           <li style={{marginTop: '2rem'}}>
              <MagneticButton href="cv.pdf" download className="creative-btn" onClick={closeMobileMenu}>
                 <i className="bi bi-download"></i> Download Resume
@@ -358,6 +438,7 @@ function App() {
             </div>
           </div>
         </div>
+        
         <div className="tech-scroller" data-aos="fade-up">
           <div className="tech-track">
             {[...techStack, ...techStack].map((tech, index) => (
@@ -367,8 +448,49 @@ function App() {
         </div>
       </section>
 
+      {/* --- REVISED STATS SECTION (Only 3 Cards) --- */}
+      <section id="stats">
+        <h2 data-aos="fade-up"><span style={{color:'var(--accent)', marginRight:'10px'}}>02.</span> Live Stats</h2>
+        
+        {/* Horizontal Stats Grid - 3 Columns now */}
+        <div className="stats-grid" data-aos="fade-up" style={{gridTemplateColumns: "repeat(3, 1fr)"}}>
+          {/* 1. Public Repos (Cyan) */}
+          <StatCard icon="bi-code-slash" label="Public Repos" value={githubStats.repos} colorClass="cyan" />
+          
+          {/* 2. Total Stars (Orange) */}
+          <StatCard icon="bi-star" label="Total Stars" value={githubStats.stars} colorClass="orange" />
+          
+          {/* 3. Total Forks (Blue) */}
+          <StatCard icon="bi-git" label="Total Forks" value={githubStats.forks} colorClass="blue" />
+        </div>
+
+        {/* HEATMAP */}
+        <div className="github-heatmap" data-aos="fade-up" data-aos-delay="200" style={{ marginTop: '3rem', textAlign: 'center' }}>
+           <div className="heatmap-container" style={{ 
+               padding: '2rem', 
+               background: 'var(--card-bg)', 
+               borderRadius: '8px', 
+               border: 'var(--glass-border)', 
+               boxShadow: 'var(--shadow)',
+               overflowX: 'auto',
+               display: 'flex',
+               justifyContent: 'center'
+           }}>
+             <img 
+               src={`https://ghchart.rshah.org/${theme === 'light' ? '005c97' : '64ffda'}/Kavindu379`} 
+               alt="Kavindu's Github Chart"
+               style={{ width: '100%', minWidth: '600px', height: 'auto' }} 
+             />
+           </div>
+           <p style={{ marginTop: '1rem', opacity: 0.7, fontSize: '0.9rem' }}>
+             <i className="bi bi-github" style={{ marginRight: '8px' }}></i>
+             Live contribution data from <a href="https://github.com/Kavindu379" target="_blank" style={{ color: 'var(--accent)', textDecoration: 'none' }}>@Kavindu379</a>
+           </p>
+        </div>
+      </section>
+
       <section id="resume">
-        <h2 data-aos="fade-up"><span style={{color:'var(--accent)', marginRight:'10px'}}>02.</span> Experience & Education</h2>
+        <h2 data-aos="fade-up"><span style={{color:'var(--accent)', marginRight:'10px'}}>03.</span> Experience & Education</h2>
         <div className="timeline">
           <div className="timeline-item left" data-aos="fade-right">
             <div className="timeline-dot"></div>
@@ -401,7 +523,7 @@ function App() {
       </section>
 
       <section id="services">
-        <h2 data-aos="fade-up"><span style={{color:'var(--accent)', marginRight:'10px'}}>03.</span> What I Do</h2>
+        <h2 data-aos="fade-up"><span style={{color:'var(--accent)', marginRight:'10px'}}>04.</span> What I Do</h2>
         <div className="grid">
           {services.map((service, index) => (
             <Tilt key={index} tiltMaxAngleX={5} tiltMaxAngleY={5} scale={1.02} transitionSpeed={2500}>
@@ -417,7 +539,7 @@ function App() {
       </section>
 
       <section id="portfolio">
-        <h2 data-aos="fade-up"><span style={{color:'var(--accent)', marginRight:'10px'}}>04.</span> Featured Projects</h2>
+        <h2 data-aos="fade-up"><span style={{color:'var(--accent)', marginRight:'10px'}}>05.</span> Featured Projects</h2>
         <div className="grid">
           {projects.map((project, index) => (
             <Tilt key={index} tiltMaxAngleX={5} tiltMaxAngleY={5} scale={1.02} transitionSpeed={2500}>
@@ -470,7 +592,7 @@ function App() {
       )}
 
       <section id="contact">
-        <h2 data-aos="fade-up"><span style={{color:'var(--accent)', marginRight:'10px'}}>05.</span> Get In Touch</h2>
+        <h2 data-aos="fade-up"><span style={{color:'var(--accent)', marginRight:'10px'}}>06.</span> Get In Touch</h2>
         <div className="contact-container">
           <div data-aos="fade-right" data-aos-delay="100">
               <div className="contact-info-item"><i className="bi bi-geo-alt"></i><div><h4 style={{margin:0, color:'var(--heading-color)'}}>Location</h4><p style={{margin:0}}>Panadura, Sri Lanka</p></div></div>
