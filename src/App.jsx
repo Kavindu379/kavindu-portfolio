@@ -339,8 +339,8 @@ function App() {
         <ul className="nav-links">
           <li><a href="#home">Home</a></li>
           <li><a href="#about">01. About</a></li>
-          <li><a href="#resume">02. Resume</a></li>
-          <li><a href="#stats">03. Stats</a></li>
+          <li><a href="#resume">02. Experience</a></li>
+          <li><a href="#stats">03. Live Stats</a></li>
           <li><a href="#services">04. Services</a></li>
           <li><a href="#portfolio">05. Projects</a></li>
           <li><a href="#contact">06. Contact</a></li>
@@ -372,20 +372,20 @@ function App() {
       </nav>
 
       <div className={`mobile-menu-overlay ${menuOpen ? 'active' : ''}`}>
-        <ul className="mobile-nav-links">
-          <li><a href="#home" onClick={closeMobileMenu}>Home</a></li>
-          <li><a href="#about" onClick={closeMobileMenu}><span>01.</span> About</a></li>
-          <li><a href="#resume" onClick={closeMobileMenu}><span>02.</span> Resume</a></li>
-          <li><a href="#stats" onClick={closeMobileMenu}><span>03.</span> Stats</a></li>
-          <li><a href="#services" onClick={closeMobileMenu}><span>04.</span> Services</a></li>
-          <li><a href="#portfolio" onClick={closeMobileMenu}><span>05.</span> Projects</a></li>
-          <li><a href="#contact" onClick={closeMobileMenu}><span>06.</span> Contact</a></li>
-          <li style={{marginTop: '2rem'}}>
+          <ul className="mobile-nav-links">
+           <li><a href="#home" onClick={closeMobileMenu}> Home</a></li>
+           <li><a href="#about" onClick={closeMobileMenu}><span>01.</span> About</a></li>
+           <li><a href="#resume" onClick={closeMobileMenu}><span>02.</span> Experience</a></li>
+           <li><a href="#stats" onClick={closeMobileMenu}><span>03.</span> Live Stats</a></li>
+           <li><a href="#services" onClick={closeMobileMenu}><span>04.</span> Services</a></li>
+           <li><a href="#portfolio" onClick={closeMobileMenu}><span>05.</span> Projects</a></li>
+           <li><a href="#contact" onClick={closeMobileMenu}><span>06.</span> Contact</a></li>
+           <li style={{marginTop: '2rem'}}>
              <MagneticButton href="cv.pdf" download className="creative-btn" onClick={closeMobileMenu}>
-                <i className="bi bi-download"></i> Download Resume
+               <i className="bi bi-download"></i> Download Resume
              </MagneticButton>
-          </li>
-        </ul>
+           </li>
+          </ul>
       </div>
 
       <section id="home" className="hero">
@@ -396,7 +396,7 @@ function App() {
           </div>
           <h3>Hi, my name is</h3>
           <h1 className="glitch" data-text="Kavindu Kavishka.">Kavindu Kavishka.</h1>
-          <h4 style={{color:'var(--text-color)', fontSize:'3rem', marginTop:'0', border:'none'}}>I build things for the web & IoT.</h4>
+          <h2 style={{color:'var(--text-color)', fontSize:'3rem', marginTop:'0', border:'none'}}>I build things for the web & IoT.</h2>
           <div style={{ fontSize: '1.2rem', color: 'var(--accent)', fontFamily: 'monospace', marginBottom: '2rem', height: '30px' }}>
             <Typewriter options={{ strings: ['> Computer Engineer', '> Full Stack Developer', '> Embedded Systems'], autoStart: true, loop: true, delay: 40 }} />
           </div>
@@ -450,6 +450,8 @@ function App() {
         </div>
       </section>
 
+      {/* stats section moved below resume */}
+
       <section id="resume">
         <h2 data-aos="fade-up"><span style={{color:'var(--accent)', marginRight:'10px'}}>02.</span> Experience & Education</h2>
         <div className="timeline">
@@ -483,23 +485,16 @@ function App() {
         </div>
       </section>
 
-      {/* --- REVISED STATS SECTION (Only 3 Cards) --- */}
+      {/* --- MOVED: Live Stats of GitHub --- */}
       <section id="stats">
-        <h2 data-aos="fade-up"><span style={{color:'var(--accent)', marginRight:'10px'}}>03.</span> Live Stats Of Github</h2>
-        
-        {/* Horizontal Stats Grid - 3 Columns now */}
+        <h2 data-aos="fade-up"><span style={{color:'var(--accent)', marginRight:'10px'}}>03.</span> Live Stats of GitHub</h2>
+
         <div className="stats-grid" data-aos="fade-up" style={{gridTemplateColumns: "repeat(3, 1fr)"}}>
-          {/* 1. Public Repos (Cyan) */}
           <StatCard icon="bi-code-slash" label="Public Repos" value={githubStats.repos} colorClass="cyan" />
-          
-          {/* 2. Total Stars (Orange) */}
           <StatCard icon="bi-star" label="Total Stars" value={githubStats.stars} colorClass="orange" />
-          
-          {/* 3. Total Forks (Blue) */}
           <StatCard icon="bi-git" label="Total Forks" value={githubStats.forks} colorClass="blue" />
         </div>
 
-        {/* HEATMAP */}
         <div className="github-heatmap" data-aos="fade-up" data-aos-delay="200" style={{ marginTop: '3rem', textAlign: 'center' }}>
            <div className="heatmap-container" style={{ 
                padding: '2rem', 
