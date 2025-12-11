@@ -337,10 +337,11 @@ function App() {
         <div className="logo" onClick={handleReset} style={{cursor: 'pointer', zIndex: 10001}} title="Reset Site">RHKKS</div>
         
         <ul className="nav-links">
-          <li><a href="#home">01. Home</a></li>
-          <li><a href="#about">02. About</a></li>
+          <li><a href="#home">Home</a></li>
+          <li><a href="#about">01. About</a></li>
+          <li><a href="#resume">02. Resume</a></li>
           <li><a href="#stats">03. Stats</a></li>
-          <li><a href="#resume">04. Resume</a></li>
+          <li><a href="#services">04. Services</a></li>
           <li><a href="#portfolio">05. Projects</a></li>
           <li><a href="#contact">06. Contact</a></li>
         </ul>
@@ -372,10 +373,11 @@ function App() {
 
       <div className={`mobile-menu-overlay ${menuOpen ? 'active' : ''}`}>
         <ul className="mobile-nav-links">
-          <li><a href="#home" onClick={closeMobileMenu}><span>01.</span> Home</a></li>
-          <li><a href="#about" onClick={closeMobileMenu}><span>02.</span> About</a></li>
+          <li><a href="#home" onClick={closeMobileMenu}>Home</a></li>
+          <li><a href="#about" onClick={closeMobileMenu}><span>01.</span> About</a></li>
+          <li><a href="#resume" onClick={closeMobileMenu}><span>02.</span> Resume</a></li>
           <li><a href="#stats" onClick={closeMobileMenu}><span>03.</span> Stats</a></li>
-          <li><a href="#resume" onClick={closeMobileMenu}><span>04.</span> Resume</a></li>
+          <li><a href="#services" onClick={closeMobileMenu}><span>04.</span> Services</a></li>
           <li><a href="#portfolio" onClick={closeMobileMenu}><span>05.</span> Projects</a></li>
           <li><a href="#contact" onClick={closeMobileMenu}><span>06.</span> Contact</a></li>
           <li style={{marginTop: '2rem'}}>
@@ -448,9 +450,42 @@ function App() {
         </div>
       </section>
 
+      <section id="resume">
+        <h2 data-aos="fade-up"><span style={{color:'var(--accent)', marginRight:'10px'}}>02.</span> Experience & Education</h2>
+        <div className="timeline">
+          <div className="timeline-item left" data-aos="fade-right">
+            <div className="timeline-dot"></div>
+            <div className="timeline-content">
+              <span className="timeline-date">Jan 2023 </span>
+              <h3>Software Engineering Intern</h3>
+              <h4 style={{color:'var(--accent)', marginBottom:'10px'}}>IXDLAB</h4>
+              <p>Specialized in UI/UX design, creating intuitive user interfaces and enhancing user experience for digital products. Worked on real-world client projects using Figma and React.</p>
+            </div>
+          </div>
+          <div className="timeline-item right" data-aos="fade-left">
+            <div className="timeline-dot"></div>
+            <div className="timeline-content">
+              <span className="timeline-date">2024 </span>
+              <h3>BSc (Hons) Computer Engineering</h3>
+              <h4 style={{color:'var(--accent)', marginBottom:'10px'}}>KDU (General Sir John Kotelawala Defence University)</h4>
+              <p>Undergraduate degree focusing on hardware, software, and networking. Currently maintaining a <strong>GPA of 3.4</strong>.</p>
+            </div>
+          </div>
+          <div className="timeline-item left" data-aos="fade-right">
+            <div className="timeline-dot"></div>
+            <div className="timeline-content">
+              <span className="timeline-date">2025</span>
+              <h3>Embedded Systems Project</h3>
+              <h4 style={{color:'var(--accent)', marginBottom:'10px'}}>Self-Initiated</h4>
+              <p>Designed and built a custom PCB for a home automation system using Altium Designer and programmed the logic in Embedded C.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* --- REVISED STATS SECTION (Only 3 Cards) --- */}
       <section id="stats">
-        <h2 data-aos="fade-up"><span style={{color:'var(--accent)', marginRight:'10px'}}>02.</span> Live Stats</h2>
+        <h2 data-aos="fade-up"><span style={{color:'var(--accent)', marginRight:'10px'}}>03.</span> Live Stats</h2>
         
         {/* Horizontal Stats Grid - 3 Columns now */}
         <div className="stats-grid" data-aos="fade-up" style={{gridTemplateColumns: "repeat(3, 1fr)"}}>
@@ -486,39 +521,6 @@ function App() {
              <i className="bi bi-github" style={{ marginRight: '8px' }}></i>
              Live contribution data from <a href="https://github.com/Kavindu379" target="_blank" style={{ color: 'var(--accent)', textDecoration: 'none' }}>@Kavindu379</a>
            </p>
-        </div>
-      </section>
-
-      <section id="resume">
-        <h2 data-aos="fade-up"><span style={{color:'var(--accent)', marginRight:'10px'}}>03.</span> Experience & Education</h2>
-        <div className="timeline">
-          <div className="timeline-item left" data-aos="fade-right">
-            <div className="timeline-dot"></div>
-            <div className="timeline-content">
-              <span className="timeline-date">Jan 2023 </span>
-              <h3>Software Engineering Intern</h3>
-              <h4 style={{color:'var(--accent)', marginBottom:'10px'}}>IXDLAB</h4>
-              <p>Specialized in UI/UX design, creating intuitive user interfaces and enhancing user experience for digital products. Worked on real-world client projects using Figma and React.</p>
-            </div>
-          </div>
-          <div className="timeline-item right" data-aos="fade-left">
-            <div className="timeline-dot"></div>
-            <div className="timeline-content">
-              <span className="timeline-date">2024 </span>
-              <h3>BSc (Hons) Computer Engineering</h3>
-              <h4 style={{color:'var(--accent)', marginBottom:'10px'}}>KDU (General Sir John Kotelawala Defence University)</h4>
-              <p>Undergraduate degree focusing on hardware, software, and networking. Currently maintaining a <strong>GPA of 3.4</strong>.</p>
-            </div>
-          </div>
-          <div className="timeline-item left" data-aos="fade-right">
-            <div className="timeline-dot"></div>
-            <div className="timeline-content">
-              <span className="timeline-date">2025</span>
-              <h3>Embedded Systems Project</h3>
-              <h4 style={{color:'var(--accent)', marginBottom:'10px'}}>Self-Initiated</h4>
-              <p>Designed and built a custom PCB for a home automation system using Altium Designer and programmed the logic in Embedded C.</p>
-            </div>
-          </div>
         </div>
       </section>
 
