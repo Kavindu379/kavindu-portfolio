@@ -44,15 +44,10 @@ function App() {
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [isLoading, setIsLoading] = useState(true);
-  
-  // --- MODAL STATES ---
   const [selectedProject, setSelectedProject] = useState(null);
   const [selectedService, setSelectedService] = useState(null);
-
-  // --- NEW: MOBILE MENU STATE ---
   const [menuOpen, setMenuOpen] = useState(false);
 
-  // --- DYNAMIC TITLE EFFECT ---
   useEffect(() => {
     const originalTitle = document.title;
     const handleVisibilityChange = () => {
@@ -159,7 +154,6 @@ function App() {
       setMousePosition({ x: e.clientX, y: e.clientY });
       
       const target = e.target;
-      // Added .hamburger and .mobile-menu-overlay a to list of hoverable items
       if (target.closest('a, button, .card, .logo, input, textarea, .footer-big-cta h2, .hamburger, .mobile-menu-overlay a')) {
         document.body.classList.add('hovering');
       } else {
@@ -185,10 +179,8 @@ function App() {
     }
   }, [isLoading]);
 
-  // --- NEW: MENU FUNCTIONS ---
   const toggleMobileMenu = () => {
     setMenuOpen(!menuOpen);
-    // Lock body scroll when menu is open
     if (!menuOpen) {
       document.body.style.overflow = 'hidden';
     } else {
@@ -257,18 +249,15 @@ function App() {
 
   return (
     <div className="app">
-      {/* CUSTOM CURSOR */}
       <div className="cursor-dot" style={{ left: `${mousePosition.x}px`, top: `${mousePosition.y}px` }} />
       <div className="cursor-outline" style={{ left: `${mousePosition.x}px`, top: `${mousePosition.y}px` }} />
 
       <ParticlesBackground theme={theme} />
       <div style={{ transform: `scaleX(${scrollProgress})`, transformOrigin: 'left', position: 'fixed', top: 0, left: 0, width: '100%', height: '4px', background: 'var(--accent)', zIndex: 9999 }} />
       
-      {/* --- NAVBAR --- */}
       <nav data-aos="fade-down" data-aos-duration="1000" data-aos-delay="200" style={{ zIndex: 10000 }}>
         <div className="logo" onClick={handleReset} style={{cursor: 'pointer', zIndex: 10001}} title="Reset Site">RHKKS</div>
         
-        {/* DESKTOP NAV LINKS (Will be hidden on mobile by CSS) */}
         <ul className="nav-links">
           <li><a href="#home">01. Home</a></li>
           <li><a href="#about">02. About</a></li>
@@ -279,7 +268,6 @@ function App() {
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
           
-          {/* THEME TOGGLE */}
           <button 
             className="creative-theme-toggle" 
             onClick={toggleTheme} 
@@ -288,14 +276,12 @@ function App() {
             <div className="sun-moon-icon"></div>
           </button>
 
-          {/* DESKTOP RESUME BUTTON (Will be hidden on mobile by CSS) */}
           <div className="desktop-btn">
              <MagneticButton href="cv.pdf" download className="creative-btn" style={{marginTop: 0, padding: '10px 24px', fontSize: '0.85rem'}}>
                <i className="bi bi-download"></i> Resume
              </MagneticButton>
           </div>
 
-          {/* --- NEW: HAMBURGER BUTTON (Visible only on mobile) --- */}
           <div className={`hamburger ${menuOpen ? 'active' : ''}`} onClick={toggleMobileMenu}>
             <span className="bar"></span>
             <span className="bar"></span>
@@ -305,7 +291,6 @@ function App() {
         </div>
       </nav>
 
-      {/* --- NEW: MOBILE MENU OVERLAY --- */}
       <div className={`mobile-menu-overlay ${menuOpen ? 'active' : ''}`}>
         <ul className="mobile-nav-links">
           <li><a href="#home" onClick={closeMobileMenu}><span>01.</span> Home</a></li>
@@ -447,7 +432,6 @@ function App() {
         </div>
       </section>
 
-      {/* --- PROJECTS MODAL --- */}
       {selectedProject && (
         <div className="modal-overlay" onClick={() => setSelectedProject(null)}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
@@ -470,7 +454,6 @@ function App() {
         </div>
       )}
 
-      {/* --- SERVICES MODAL --- */}
       {selectedService && (
         <div className="modal-overlay" onClick={() => setSelectedService(null)} style={{zIndex: 20002}}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()} style={{ maxWidth: '600px' }}>
@@ -509,7 +492,6 @@ function App() {
         </div>
       </section>
 
-      {/* --- FOOTER --- */}
       <footer>
         <div className="footer-big-cta">
           <a href="mailto:kkavindu379@gmail.com" style={{textDecoration:'none'}}>
