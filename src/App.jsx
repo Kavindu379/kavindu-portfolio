@@ -387,7 +387,6 @@ function App() {
         <div className="logo" onClick={handleReset} style={{ cursor: 'pointer', zIndex: 10001 }} title="Reset Site">RHKKS</div>
 
         <ul className="nav-links">
-          <li><a href="#home">Home</a></li>
           <li><a href="#about">01. About</a></li>
           <li><a href="#resume">02. Experience</a></li>
           <li><a href="#stats">03. Live Stats</a></li>
@@ -423,7 +422,6 @@ function App() {
 
       <div className={`mobile-menu-overlay ${menuOpen ? 'active' : ''}`}>
         <ul className="mobile-nav-links">
-          <li><a href="#home" onClick={closeMobileMenu}> Home</a></li>
           <li><a href="#about" onClick={closeMobileMenu}><span>01.</span> About</a></li>
           <li><a href="#resume" onClick={closeMobileMenu}><span>02.</span> Experience</a></li>
           <li><a href="#stats" onClick={closeMobileMenu}><span>03.</span> Live Stats</a></li>
@@ -500,46 +498,6 @@ function App() {
         </div>
       </section>
 
-      {/* --- REVISED STATS SECTION (Only 3 Cards) --- */}
-      <section id="stats">
-        <h2 data-aos="fade-up"><span style={{ color: 'var(--accent)', marginRight: '10px' }}>02.</span> Live Stats</h2>
-
-        {/* Horizontal Stats Grid - 3 Columns now */}
-        <div className="stats-grid" data-aos="fade-up" style={{ gridTemplateColumns: "repeat(3, 1fr)" }}>
-          {/* 1. Public Repos (Cyan) */}
-          <StatCard icon="bi-code-slash" label="Public Repos" value={githubStats.repos} colorClass="cyan" />
-
-          {/* 2. Total Stars (Orange) */}
-          <StatCard icon="bi-star" label="Total Stars" value={githubStats.stars} colorClass="orange" />
-
-          {/* 3. Total Forks (Blue) */}
-          <StatCard icon="bi-git" label="Total Forks" value={githubStats.forks} colorClass="blue" />
-        </div>
-
-        {/* HEATMAP */}
-        <div className="github-heatmap" data-aos="fade-up" data-aos-delay="200" style={{ marginTop: '3rem', textAlign: 'center' }}>
-          <div className="heatmap-container" style={{
-            padding: '2rem',
-            background: 'var(--card-bg)',
-            borderRadius: '8px',
-            border: 'var(--glass-border)',
-            boxShadow: 'var(--shadow)',
-            overflowX: 'auto',
-            display: 'flex',
-            justifyContent: 'center'
-          }}>
-            <img
-              src={`https://ghchart.rshah.org/${theme === 'light' ? '005c97' : '64ffda'}/Kavindu379`}
-              alt="Kavindu's Github Chart"
-              style={{ width: '100%', minWidth: '600px', height: 'auto' }}
-            />
-          </div>
-          <p style={{ marginTop: '1rem', opacity: 0.7, fontSize: '0.9rem' }}>
-            <i className="bi bi-github" style={{ marginRight: '8px' }}></i>
-            Live contribution data from <a href="https://github.com/Kavindu379" target="_blank" style={{ color: 'var(--accent)', textDecoration: 'none' }}>@Kavindu379</a>
-          </p>
-        </div>
-      </section>
 
       <section id="resume">
         <h2 data-aos="fade-up"><span style={{ color: 'var(--accent)', marginRight: '10px' }}>02.</span> Experience & Education</h2>
@@ -578,33 +536,22 @@ function App() {
       <section id="stats">
         <h2 data-aos="fade-up"><span style={{ color: 'var(--accent)', marginRight: '10px' }}>03.</span> Live Stats of GitHub</h2>
 
-        <div className="stats-grid" data-aos="fade-up" style={{ gridTemplateColumns: "repeat(3, 1fr)" }}>
-          <StatCard icon="bi-code-slash" label="Public Repos" value={githubStats.repos} colorClass="cyan" />
-          <StatCard icon="bi-star" label="Total Stars" value={githubStats.stars} colorClass="orange" />
-          <StatCard icon="bi-git" label="Total Forks" value={githubStats.forks} colorClass="blue" />
-        </div>
+        {/* CSS Grid 1-column — guarantees identical width for both rows */}
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '1.5rem', width: '100%' }}>
 
-        <div className="github-heatmap" data-aos="fade-up" data-aos-delay="200" style={{ marginTop: '3rem', textAlign: 'center' }}>
-          <div className="heatmap-container" style={{
-            padding: '2rem',
-            background: 'var(--card-bg)',
-            borderRadius: '8px',
-            border: 'var(--glass-border)',
-            boxShadow: 'var(--shadow)',
-            overflowX: 'auto',
-            display: 'flex',
-            justifyContent: 'center'
-          }}>
-            <img
-              src={`https://ghchart.rshah.org/${theme === 'light' ? '005c97' : '64ffda'}/Kavindu379`}
-              alt="Kavindu's Github Chart"
-              style={{ width: '100%', minWidth: '600px', height: 'auto' }}
-            />
+          {/* 4 Stat Cards */}
+          <div className="stats-grid" data-aos="fade-up" style={{gridTemplateColumns: 'repeat(4, 1fr)'}}>
+            <StatCard icon="bi-code-slash" label="Public Repos" value={githubStats.repos} colorClass="cyan" />
+            <StatCard icon="bi-star" label="Total Stars" value={githubStats.stars} colorClass="orange" />
+            <StatCard icon="bi-git" label="Total Forks" value={githubStats.forks} colorClass="blue" />
+            <StatCard icon="bi-folder-check" label="Projects Built" value={7} colorClass="green" />
           </div>
-          <p style={{ marginTop: '1rem', opacity: 0.7, fontSize: '0.9rem' }}>
-            <i className="bi bi-github" style={{ marginRight: '8px' }}></i>
-            Live contribution data from <a href="https://github.com/Kavindu379" target="_blank" style={{ color: 'var(--accent)', textDecoration: 'none' }}>@Kavindu379</a>
-          </p>
+
+          {/* Heatmap — forced to same 1fr column width */}
+          <div data-aos="fade-up" data-aos-delay="150" style={{ width: '100%', minWidth: 0 }}>
+            <GitHubHeatmap username="Kavindu379" theme={theme} />
+          </div>
+
         </div>
       </section>
 
