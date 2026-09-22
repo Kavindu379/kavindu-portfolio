@@ -4,6 +4,7 @@ import 'aos/dist/aos.css'
 import Tilt from 'react-parallax-tilt'
 import Typewriter from 'typewriter-effect'
 import ParticlesBackground from './ParticlesBackground'
+import GitHubHeatmap from './GitHubHeatmap'
 
 // --- CUSTOM HOOK FOR NUMBER ANIMATION ---
 const useCounter = (end, duration = 2000) => {
@@ -84,12 +85,24 @@ function App() {
   const [theme, setTheme] = useState('dark');
   const [scrollProgress, setScrollProgress] = useState(0);
   const [showScrollTop, setShowScrollTop] = useState(false);
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [navVisible, setNavVisible] = useState(true);
+  const lastScrollY = useRef(0);
+
   const [isLoading, setIsLoading] = useState(true);
   
   const [selectedProject, setSelectedProject] = useState(null);
   const [selectedService, setSelectedService] = useState(null);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [activeFilter, setActiveFilter] = useState('All');
+  const [toast, setToast] = useState(null);
+
+  const showToast = (message, type = 'success') => {
+    setToast({ message, type });
+    setTimeout(() => {
+      setToast(prev => prev ? { ...prev, hiding: true } : null);
+      setTimeout(() => setToast(null), 400);
+    }, 3500);
+  };
 
   // --- GITHUB STATS STATE ---
   const [githubStats, setGithubStats] = useState({ repos: 0, stars: 0, forks: 0 });
@@ -143,6 +156,46 @@ function App() {
   const projects = [
     {
       id: 1,
+      title: 'Mango AI Quality System',
+      category: 'Artificial Intelligence & Computer Vision',
+      desc: 'An AI-powered mango quality detection system using computer vision to classify mangoes by ripeness, defects, and grade. The system processes real-time camera feeds using a trained ML model to automate quality control in agricultural supply chains, improving accuracy and reducing manual inspection time.',
+      tech: ['Python', 'Computer Vision', 'Machine Learning', 'OpenCV', 'TensorFlow'],
+      icon: 'bi-cpu-fill',
+      image: 'https://images.unsplash.com/photo-1519996529931-28324d5a630e?auto=format&fit=crop&q=80&w=1000',
+      github: 'https://github.com/Kavindu379/Mango-AI-Quality-System'
+    },
+    {
+      id: 2,
+      title: 'Fix My City',
+      category: 'Mobile App Development',
+      desc: 'A community-driven Android application that enables citizens to report and track local infrastructure issues such as potholes, broken streetlights, and drainage problems. Features GPS-tagged reports, photo uploads, status tracking, and admin dashboards for municipal authorities.',
+      tech: ['Kotlin', 'Android', 'Firebase', 'Google Maps API', 'REST API'],
+      icon: 'bi-phone',
+      image: 'https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?auto=format&fit=crop&q=80&w=1000',
+      github: 'https://github.com/Kavindu379/fix_my_city'
+    },
+    {
+      id: 3,
+      title: 'CineSearch Movie App',
+      category: 'Frontend Web Development',
+      desc: 'A sleek movie discovery web application that fetches live data from a movie database API. Users can search for movies, view ratings, read plot summaries, and browse by genre. Features a fully responsive design with dark mode support and smooth UI transitions.',
+      tech: ['HTML', 'CSS', 'JavaScript', 'TMDB API', 'REST API'],
+      icon: 'bi-camera-reels',
+      image: 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&q=80&w=1000',
+      github: 'https://github.com/Kavindu379/CineSearch-Movie-App'
+    },
+    {
+      id: 4,
+      title: 'Uni Attendance Tracker',
+      category: 'Mobile App Development',
+      desc: 'An Android attendance management system for university students to track their lecture attendance, calculate attendance percentages per module, and receive alerts when attendance drops below the required threshold. Helps students manage their academic standing proactively.',
+      tech: ['Kotlin', 'Android', 'SQLite', 'Material Design', 'Room DB'],
+      icon: 'bi-calendar-check',
+      image: 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&q=80&w=1000',
+      github: 'https://github.com/Kavindu379/Uni_Attendance_Tracker'
+    },
+    {
+      id: 5,
       title: 'Automated Parking System',
       category: 'IoT & Embedded Systems',
       desc: 'A smart parking solution designed to optimize space usage and reduce traffic congestion. The system uses IR sensors to detect vehicle presence and automatically controls entry/exit gates. It features a real-time display showing available slots and prevents unauthorized entry.',
@@ -152,22 +205,22 @@ function App() {
       github: 'https://github.com/Kavindu379'
     },
     {
-      id: 2,
+      id: 6,
       title: 'Real Estate Platform',
       category: 'Full Stack Web Dev',
       desc: 'A modern, responsive web application for buying, selling, and renting properties. It features advanced search filters, an interactive map integration, and a user-friendly admin dashboard for managing listings. Built with a focus on high performance and SEO.',
-      tech: ['React', 'Node.js', 'MongoDB', 'Tailwind CSS', 'Framer Motion'],
+      tech: ['PHP', 'MySQL', 'HTML', 'CSS', 'JavaScript'],
       icon: 'bi-building',
       image: 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&q=80&w=1000',
       github: 'https://github.com/Kavindu379/Real_Estate_Website'
     },
     {
-      id: 3,
+      id: 7,
       title: 'AI Personal Assistant',
       category: 'Artificial Intelligence',
       desc: 'A voice-activated desktop assistant capable of performing system tasks, searching the web, and answering queries. It utilizes Natural Language Processing (NLP) to understand context and can automate daily workflows like sending emails or playing music.',
-      tech: ['Python', 'NLP', 'Speech Recognition', 'OpenAI API', 'PyAudio'],
-      icon: 'bi-cpu',
+      tech: ['Java', 'NLP', 'Speech Recognition', 'API Integration'],
+      icon: 'bi-mic',
       image: 'https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&q=80&w=1000',
       github: 'https://github.com/Kavindu379/Personal-Assistant-Project'
     }
@@ -221,30 +274,26 @@ function App() {
     document.body.className = savedTheme + '-mode';
 
     const handleScroll = () => {
-      const totalScroll = document.documentElement.scrollTop;
+      const totalScroll = window.scrollY;
       const windowHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
       const scroll = `${totalScroll / windowHeight}`;
       setScrollProgress(Number(scroll));
       setShowScrollTop(totalScroll > 300);
+
+      // Nav hide/show logic
+      if (totalScroll > lastScrollY.current && totalScroll > 100) {
+        setNavVisible(false); // scrolling down & past 100px -> hide
+      } else {
+        setNavVisible(true); // scrolling up -> show
+      }
+      lastScrollY.current = totalScroll;
     }
 
-    const updateMousePosition = (e) => {
-      setMousePosition({ x: e.clientX, y: e.clientY });
-      
-      const target = e.target;
-      if (target.closest('a, button, .card, .logo, input, textarea, .footer-big-cta h2, .hamburger, .mobile-menu-overlay a, .stat-card')) {
-        document.body.classList.add('hovering');
-      } else {
-        document.body.classList.remove('hovering');
-      }
-    };
+
 
     window.addEventListener('scroll', handleScroll);
-    window.addEventListener('mousemove', updateMousePosition);
-
     return () => {
       window.removeEventListener('scroll', handleScroll);
-      window.removeEventListener('mousemove', updateMousePosition);
     };
   }, []);
 
@@ -293,16 +342,20 @@ function App() {
     event.preventDefault();
     const formData = new FormData(event.target);
     formData.append("access_key", "36782a8c-a13f-436b-ba82-06973d308895");
-    const response = await fetch("https://api.web3forms.com/submit", {
-      method: "POST",
-      body: formData
-    });
-    const data = await response.json();
-    if (data.success) {
-      alert("Message Sent Successfully!");
-      event.target.reset();
-    } else {
-      console.log("Error", data);
+    try {
+      const response = await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        body: formData
+      });
+      const data = await response.json();
+      if (data.success) {
+        showToast('✅ Message sent successfully! I will get back to you soon.', 'success');
+        event.target.reset();
+      } else {
+        showToast('❌ Failed to send. Please try again.', 'error');
+      }
+    } catch {
+      showToast('❌ Network error. Please check your connection.', 'error');
     }
   };
 
@@ -327,13 +380,10 @@ function App() {
 
   return (
     <div className="app">
-      <div className="cursor-dot" style={{ left: `${mousePosition.x}px`, top: `${mousePosition.y}px` }} />
-      <div className="cursor-outline" style={{ left: `${mousePosition.x}px`, top: `${mousePosition.y}px` }} />
-
       <ParticlesBackground theme={theme} />
       <div style={{ transform: `scaleX(${scrollProgress})`, transformOrigin: 'left', position: 'fixed', top: 0, left: 0, width: '100%', height: '4px', background: 'var(--accent)', zIndex: 9999 }} />
       
-      <nav data-aos="fade-down" data-aos-duration="1000" data-aos-delay="200" style={{ zIndex: 10000 }}>
+      <nav className={navVisible ? '' : 'nav-hidden'} style={{ zIndex: 10000 }}>
         <div className="logo" onClick={handleReset} style={{cursor: 'pointer', zIndex: 10001}} title="Reset Site">RHKKS</div>
         
         <ul className="nav-links">
@@ -390,13 +440,13 @@ function App() {
         <div className="hero-text" data-aos="fade-up" data-aos-delay="300">
           <div className="status-badge">
             <div className="status-dot"></div>
-            <span>Currently working on: <strong>Autonomous Drone</strong></span>
+            <span>Open to work: <strong>Internships &amp; Freelance</strong></span>
           </div>
           <h3>Hi, my name is</h3>
           <h1 className="glitch" data-text="Kavindu Kavishka.">Kavindu Kavishka.</h1>
-          <h2 style={{color:'var(--text-color)', fontSize:'3rem', marginTop:'0', border:'none'}}>I build things for the web & IoT.</h2>
+          <h2 style={{color:'var(--text-color)', fontSize:'3rem', marginTop:'0', border:'none'}}>I build things for the web &amp; IoT.</h2>
           <div style={{ fontSize: '1.2rem', color: 'var(--accent)', fontFamily: 'monospace', marginBottom: '2rem', height: '30px' }}>
-            <Typewriter options={{ strings: ['> Computer Engineer', '> Full Stack Developer', '> Embedded Systems'], autoStart: true, loop: true, delay: 40 }} />
+            <Typewriter options={{ strings: ['> Computer Engineer', '> Full Stack Developer', '> Embedded Systems', '> AI Engineer', '> Android Developer'], autoStart: true, loop: true, delay: 40 }} />
           </div>
           <p style={{maxWidth:'500px', lineHeight:'1.8'}}>I am a Computer Engineering undergraduate at <strong>KDU</strong> bridging the gap between hardware and software.</p>
           <div className="social-icons" style={{marginTop:'2rem', marginBottom:'2rem'}}>
@@ -420,7 +470,7 @@ function App() {
             <p style={{marginBottom:'1rem', lineHeight:'1.6'}}>Hello! My name is Kavindu and I enjoy creating things that live on the internet and in the physical world. My interest in engineering started back in 2023 when I decided to try editing custom PCB designs — turns out hacking together hardware models taught me a lot about HTML & CSS too!</p>
             <div className="stats-row" style={{display:'flex', gap:'2rem', marginTop:'2rem'}}>
               <div className="stat"><strong>1+</strong> Years Exp</div>
-              <div className="stat"><strong>4+</strong> Projects</div>
+              <div className="stat"><strong>7+</strong> Projects</div>
               <div className="stat"><strong>3.4</strong> GPA</div>
             </div>
           </div>
@@ -448,44 +498,26 @@ function App() {
         </div>
       </section>
 
-      {/* --- REVISED STATS SECTION (Only 3 Cards) --- */}
+      {/* --- STATS SECTION --- */}
       <section id="stats">
         <h2 data-aos="fade-up"><span style={{color:'var(--accent)', marginRight:'10px'}}>02.</span> Live Stats</h2>
-        
-        {/* Horizontal Stats Grid - 3 Columns now */}
-        <div className="stats-grid" data-aos="fade-up" style={{gridTemplateColumns: "repeat(3, 1fr)"}}>
-          {/* 1. Public Repos (Cyan) */}
-          <StatCard icon="bi-code-slash" label="Public Repos" value={githubStats.repos} colorClass="cyan" />
-          
-          {/* 2. Total Stars (Orange) */}
-          <StatCard icon="bi-star" label="Total Stars" value={githubStats.stars} colorClass="orange" />
-          
-          {/* 3. Total Forks (Blue) */}
-          <StatCard icon="bi-git" label="Total Forks" value={githubStats.forks} colorClass="blue" />
-        </div>
 
-        {/* HEATMAP */}
-        <div className="github-heatmap" data-aos="fade-up" data-aos-delay="200" style={{ marginTop: '3rem', textAlign: 'center' }}>
-           <div className="heatmap-container" style={{ 
-               padding: '2rem', 
-               background: 'var(--card-bg)', 
-               borderRadius: '8px', 
-               border: 'var(--glass-border)', 
-               boxShadow: 'var(--shadow)',
-               overflowX: 'auto',
-               display: 'flex',
-               justifyContent: 'center'
-           }}>
-             <img 
-               src={`https://ghchart.rshah.org/${theme === 'light' ? '005c97' : '64ffda'}/Kavindu379`} 
-               alt="Kavindu's Github Chart"
-               style={{ width: '100%', minWidth: '600px', height: 'auto' }} 
-             />
-           </div>
-           <p style={{ marginTop: '1rem', opacity: 0.7, fontSize: '0.9rem' }}>
-             <i className="bi bi-github" style={{ marginRight: '8px' }}></i>
-             Live contribution data from <a href="https://github.com/Kavindu379" target="_blank" style={{ color: 'var(--accent)', textDecoration: 'none' }}>@Kavindu379</a>
-           </p>
+        {/* CSS Grid 1-column — guarantees identical width for both rows */}
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '1.5rem', width: '100%' }}>
+
+          {/* 4 Stat Cards */}
+          <div className="stats-grid" data-aos="fade-up" style={{gridTemplateColumns: 'repeat(4, 1fr)'}}>
+            <StatCard icon="bi-code-slash" label="Public Repos" value={githubStats.repos} colorClass="cyan" />
+            <StatCard icon="bi-star" label="Total Stars" value={githubStats.stars} colorClass="orange" />
+            <StatCard icon="bi-git" label="Total Forks" value={githubStats.forks} colorClass="blue" />
+            <StatCard icon="bi-folder-check" label="Projects Built" value={7} colorClass="green" />
+          </div>
+
+          {/* Heatmap — forced to same 1fr column width */}
+          <div data-aos="fade-up" data-aos-delay="150" style={{ width: '100%', minWidth: 0 }}>
+            <GitHubHeatmap username="Kavindu379" theme={theme} />
+          </div>
+
         </div>
       </section>
 
@@ -540,14 +572,41 @@ function App() {
 
       <section id="portfolio">
         <h2 data-aos="fade-up"><span style={{color:'var(--accent)', marginRight:'10px'}}>05.</span> Featured Projects</h2>
+
+        {/* Filter Tabs */}
+        <div className="filter-tabs" data-aos="fade-up">
+          {['All', 'Web', 'Mobile', 'AI', 'IoT'].map(tab => (
+            <button
+              key={tab}
+              className={`filter-tab ${activeFilter === tab ? 'active' : ''}`}
+              onClick={() => setActiveFilter(tab)}
+            >
+              {tab}
+            </button>
+          ))}
+        </div>
+
         <div className="grid">
-          {projects.map((project, index) => (
-            <Tilt key={index} tiltMaxAngleX={5} tiltMaxAngleY={5} scale={1.02} transitionSpeed={2500}>
+          {projects
+            .filter(p => {
+              if (activeFilter === 'All') return true;
+              if (activeFilter === 'Web') return p.category.toLowerCase().includes('web');
+              if (activeFilter === 'Mobile') return p.category.toLowerCase().includes('mobile');
+              if (activeFilter === 'AI') return p.category.toLowerCase().includes('ai') || p.category.toLowerCase().includes('artificial');
+              if (activeFilter === 'IoT') return p.category.toLowerCase().includes('iot') || p.category.toLowerCase().includes('embedded');
+              return true;
+            })
+            .map((project, index) => (
+            <Tilt key={project.id} tiltMaxAngleX={5} tiltMaxAngleY={5} scale={1.02} transitionSpeed={2500}>
               <div className="card" data-aos="fade-up" data-aos-delay={index * 50} onClick={() => setSelectedProject(project)} style={{cursor: 'pointer'}}>
+                <div className="card-category-badge">{project.category}</div>
                 <div className="icon"><i className={`bi ${project.icon}`}></i></div>
                 <h3>{project.title}</h3>
-                <p style={{marginBottom:'1rem'}}>{project.desc.substring(0, 80)}...</p>
-                <small style={{color:'var(--accent)'}}>Click for details &rarr;</small>
+                <p style={{marginBottom:'0.5rem'}}>{project.desc.substring(0, 80)}...</p>
+                <div className="card-tech-pills">
+                  {project.tech.slice(0, 3).map((t, i) => <span key={i} className="card-tech-pill">{t}</span>)}
+                </div>
+                <small style={{color:'var(--accent)', marginTop:'1rem', display:'block'}}>Click for details &rarr;</small>
               </div>
             </Tilt>
           ))}
@@ -650,14 +709,23 @@ function App() {
           </div>
         </div>
         <div className="footer-bottom">
-          <p>© 2025 <strong>RHKKS</strong>. All Rights Reserved.</p>
+          <p>© 2026 <strong>RHKKS</strong>. All Rights Reserved.</p>
           <div className="system-status"><div className="blink"></div> SYSTEM ONLINE</div>
         </div>
       </footer>
       
+      {/* Toast Notification */}
+      {toast && (
+        <div className="toast-container">
+          <div className={`toast ${toast.type} ${toast.hiding ? 'hide' : ''}`}>
+            {toast.message}
+          </div>
+        </div>
+      )}
+
       {showScrollTop && (
-        <button onClick={scrollToTop} style={{ position: 'fixed', bottom: '30px', right: '30px', background: 'var(--accent)', color: 'var(--bg-color)', border: 'none', borderRadius: '5px', width: '50px', height: '50px', cursor: 'pointer', zIndex: 999 }}>
-          <i className="bi bi-arrow-up" style={{fontSize: '1.5rem'}}></i>
+        <button onClick={scrollToTop} className="scroll-top-btn">
+          <i className="bi bi-arrow-up" style={{fontSize: '1.3rem'}}></i>
         </button>
       )}
     </div>
