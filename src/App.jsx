@@ -420,20 +420,34 @@ function App() {
         </div>
       </nav>
 
-      <div className={`mobile-menu-overlay ${menuOpen ? 'active' : ''}`}>
-        <ul className="mobile-nav-links">
-          <li><a href="#about" onClick={closeMobileMenu}><span>01.</span> About</a></li>
-          <li><a href="#resume" onClick={closeMobileMenu}><span>02.</span> Experience</a></li>
-          <li><a href="#stats" onClick={closeMobileMenu}><span>03.</span> Live Stats</a></li>
-          <li><a href="#services" onClick={closeMobileMenu}><span>04.</span> Services</a></li>
-          <li><a href="#portfolio" onClick={closeMobileMenu}><span>05.</span> Projects</a></li>
-          <li><a href="#contact" onClick={closeMobileMenu}><span>06.</span> Contact</a></li>
-          <li style={{ marginTop: '2rem' }}>
-            <MagneticButton href="cv.pdf" download className="creative-btn" onClick={closeMobileMenu}>
+      <div className={`mobile-menu-overlay ${menuOpen ? 'active' : ''}`} onClick={(e) => {
+        if (e.target.classList.contains('mobile-menu-overlay')) closeMobileMenu();
+      }}>
+        <div className="mobile-drawer">
+          <div className="mobile-drawer-header">
+            <img src="kavindu.jpeg" alt="Kavindu Kavishka" className="mobile-drawer-pic" />
+            <div className="mobile-drawer-info">
+              <h4>Kavindu Kavishka</h4>
+              <p>Computer Engineer</p>
+            </div>
+          </div>
+          
+          <ul className="mobile-nav-links">
+            <li><a href="#home" onClick={closeMobileMenu}><i className="bi bi-house"></i> Home</a></li>
+            <li><a href="#about" onClick={closeMobileMenu}><i className="bi bi-person"></i> About</a></li>
+            <li><a href="#resume" onClick={closeMobileMenu}><i className="bi bi-briefcase"></i> Experience</a></li>
+            <li><a href="#stats" onClick={closeMobileMenu}><i className="bi bi-bar-chart"></i> Live Stats</a></li>
+            <li><a href="#services" onClick={closeMobileMenu}><i className="bi bi-gear"></i> Services</a></li>
+            <li><a href="#portfolio" onClick={closeMobileMenu}><i className="bi bi-folder"></i> Projects</a></li>
+            <li><a href="#contact" onClick={closeMobileMenu}><i className="bi bi-envelope"></i> Contact</a></li>
+          </ul>
+
+          <div style={{ padding: '2rem 1.5rem', marginTop: 'auto' }}>
+            <MagneticButton href="cv.pdf" download className="creative-btn" onClick={closeMobileMenu} style={{ width: '100%', justifyContent: 'center' }}>
               <i className="bi bi-download"></i> Download Resume
             </MagneticButton>
-          </li>
-        </ul>
+          </div>
+        </div>
       </div>
 
       <section id="home" className="hero">
